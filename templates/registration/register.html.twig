@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Register</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_errors(registrationForm) }}
+
+                        {{ form_start(registrationForm) }}
+                            <div class="mb-4"> {# Added margin-bottom here #}
+                                {{ form_row(registrationForm.username) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_row(registrationForm.plainPassword.first, {
+                                    label: 'Password',
+                                    attr: {
+                                        class: 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_row(registrationForm.plainPassword.second, {
+                                    label: 'Confirm Password',
+                                    attr: {
+                                        class: 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_row(registrationForm.email.first, {
+                                    label: 'E-mail',
+                                    attr: {
+                                        class: 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_row(registrationForm.email.second, {
+                                    label: 'Confirm E-mail',
+                                    attr: {
+                                        class: 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_row(registrationForm.phonenum, {
+                                    label: 'Phone Number',
+                                    attr: {
+                                        class: 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                           <div class="form-check d-flex align-items-center">
+                                {{ form_widget(registrationForm.agreeTerms, {'id': 'registration_form_agreeTerms', 'class': 'form-check-input me-2'}) }}
+                                <label class="form-check-label mb-0" for="registration_form_agreeTerms">
+                                    I agree to the <a href="{{ path('terms_of_use') }}" class="link-primary" target="_blank">Terms of Use</a>
+                                </label>
+                            </div>
+                            {{ form_errors(registrationForm.agreeTerms) }}
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">Register</button> {# Added margin-top here #}
+                        {{ form_end(registrationForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

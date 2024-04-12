@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block body %}
+
+<div class="row my-4">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                Edit Product
+            </div>
+            <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {{ form(form) }}
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

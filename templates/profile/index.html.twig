@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<div class="row my-5">
+    <div class="col-md-10 mx-auto">
+        {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{message}}
+        </div>
+        {% endfor %}
+        <div class="container mt-5">
+            <div class="card">
+                <h1 class="card-header text-center">Your Profile</h1>
+                <div class="card-body text-center">
+                    {% if user.profilepic %}
+                        <div class="profile-pic-container">
+                            <img src="{{ asset('pfpics/' ~ user.profilepic) }}" alt="{{ user.username }}"
+                                 class="profile-pic rounded-circle">
+                        </div>
+                    {% else %}
+                        <div class="profile-pic-container">
+                            <img src="{{ asset('pfpics/NoPFP.png') }}" alt="{{ user.username }}"
+                                 class="profile-pic rounded-circle">
+                        </div>
+                    {% endif %}
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                        <li class="list-group-item"><strong>Phone Number:</strong> {{ user.phonenum }}</li>
+                        <li class="list-group-item">
+                            <strong>Status:</strong>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Normal User</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <!-- Profile Picture Upload Form -->
+                    <a href="{{ path('edit_profile', {id: user.id}) }}" class="btn btn-sm btn-info">
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-pic-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+        }
+    </style>
+{% endblock %}
+
+

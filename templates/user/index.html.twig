@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users List{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+            {% endfor %}
+            <h1>Users List</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                            ADMIN
+                            {% else %}
+                            Normal User
+                            {% endif %}
+                        </td>
+                        <td class="d-flex justify-content-around align-items-center">
+                            {% if 'ROLE_ADMIN' not in user.roles %}
+                            <form id="give_admin_{{ user.id }}" action="{{ path('admin_user_give_admin', { 'id': user.id }) }}" method="post">
+                                <button type="submit" class="btn btn-sm btn-primary">Give Admin</button>
+                            </form>
+                            {% endif %}
+                            <form id="{{user.id}}" action="{{path('admin_user_delete',{id: user.id})}}" method="post">
+                                <button onclick="deleteItem('{{ user.id }}')" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

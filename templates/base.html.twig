@@ -31,6 +31,30 @@
     }
     </script>
     <script src="https://kit.fontawesome.com/2c68a7a0e8.js" crossorigin="anonymous"></script>
+    <script>
+   // Function to show spinner and overlay
+    function showSpinner() {
+        document.querySelector('.spinner').style.display = 'block';
+        document.querySelector('.overlay').style.display = 'block';
+    }
+
+    // Function to hide spinner and overlay
+    function hideSpinner() {
+        document.querySelector('.spinner').style.display = 'none';
+        document.querySelector('.overlay').style.display = 'none';
+    }
+
+    // Event listener for page load
+    window.addEventListener('load', function () {
+        hideSpinner(); // Hide spinner and overlay when page is loaded
+    });
+
+    // Event listener for beforeunload (when navigating back)
+    window.addEventListener('beforeunload', function () {
+        showSpinner(); // Show spinner and overlay when navigating back
+    });
+</script>
+
     {% endblock %}
     
     <style>
@@ -53,9 +77,47 @@
         .navbar-profile span {
             color: #f2f2f2; /* Text color */
         }
+    
+     /* CSS for spinner */
+    .spinner {
+        display: none; /* Hide spinner by default */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        width: 80px; /* Increased width */
+        height: 80px; /* Increased height */
+        border: 6px solid rgba(0, 0, 0, 0.3); /* Increased border thickness */
+        border-radius: 50%;
+        border-top-color: #007bff; /* Changed border color to blue */
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+    /* CSS for overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Full width of viewport */
+            height: 100vh; /* Full height of viewport */
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            z-index: 9998; /* Ensure overlay is below spinner */
+        }
     </style>
 </head>
 <body>
+<div class="overlay"></div>
+<div class="spinner"></div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">SymStore</a>

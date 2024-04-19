@@ -57,10 +57,22 @@ class CategoryController extends AbstractController
     #[IsGranted("ROLE_ADMIN", statusCode:404, message:"Page not found")]
     public function delete(Category $category): Response
     {
+        // Retrieve all products associated with the category
+        $products = $category->getProducts();
+
+        // Remove each product
+        foreach ($products as $product) {
+            $this->entityManager->remove($product);
+        }
+
+        // Remove the category itself
         $this->entityManager->remove($category);
+
+        // Flush changes to the database
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Category deleted successfully.');
+        $this->addFlash('success', 'Category and associated products deleted successfully.');
         return $this->redirectToRoute('admin_category_list');
     }
+
 }

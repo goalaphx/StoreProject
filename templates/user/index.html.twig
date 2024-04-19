@@ -41,9 +41,9 @@
                                 <button type="submit" class="btn btn-sm btn-primary">Give Admin</button>
                             </form>
                             {% endif %}
-                            <form id="{{user.id}}" action="{{path('admin_user_delete',{id: user.id})}}" method="post">
-                                <button onclick="deleteItem('{{ user.id }}')" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
+                            <form id="{{user.id}}" action="{{path('admin_user_delete',{id: user.id})}}" method="post"></form>
+                            <button onclick="deleteItem('{{ user.id }}')" class="btn btn-sm btn-danger">Delete</button>
+                
                         </td>
                     </tr>
                     {% endfor %}

@@ -1,16 +1,22 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
-    <div class="container">
-        <form method="post">
-            <h2 class="center">Verify your account</h2>
-                <div class="form-group">
-                <div class="center"><small>Check your Whatsapp message for your OTP</small></div><br/><br/>
-                    <div class="center">{{message}}</div><br/><br/>
-                    <div class="form-group">
-                       <input type="text" name="otp" required placeholder="Enter your OTP">
-                    </div>
-                    <button type="submit">Verify</button>
-                </div>
-            </form>
-    </div>
+<div class="container mb-5"> <!-- Added mb-5 class for bottom margin -->
+{% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+            {% endfor %}
+    <form method="post">
+        <h2 class="text-center mt-3">Verify your account</h2>
+        <div class="form-group">
+            <p class="text-center"><small>Check your Whatsapp message for your OTP</small></p>
+            <div class="alert alert-info text-center">{{ message }}</div>
+            <div class="form-group">
+                <input type="text" class="form-control mb-3" name="otp" required placeholder="Enter your OTP">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Verify</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

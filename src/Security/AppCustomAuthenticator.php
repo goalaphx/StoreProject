@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use App\Entity\User;
 
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -44,14 +45,27 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        // Retrieve the authenticated user from the token
+        $user = $token->getUser();
+    
+        // Check if the user status is "Pending"
+        if ($user instanceof User && $user->getVerifiyStatus() === 'Pending') {
+            // Redirect to the verify route if the user status is "Pending"
+            return new RedirectResponse($this->urlGenerator->generate('verify'));
+        }
+    
+        // If there's a target path stored, redirect to it
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
-        // For example:
-        // return new RedirectResponse($this->urlGenerator->generate('some_route'));
+    
+        // If no target path is stored or the user status is not "Pending",
+        // redirect to a default route (e.g., home)
         return new RedirectResponse($this->urlGenerator->generate('home'));
     }
+    
+
+
 
     protected function getLoginUrl(Request $request): string
     {

@@ -12,26 +12,48 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function deleteItem(id) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById(id).submit();
-                }
-            });
-        }
+    function deleteItem(id) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(id).submit();
+            } else {
+                return false; // Prevent form submission
+            }
+        });
+    }
     </script>
     <script src="https://kit.fontawesome.com/2c68a7a0e8.js" crossorigin="anonymous"></script>
-    
-    
     {% endblock %}
+    
+    <style>
+        /* CSS for positioning user profile picture and username */
+        .navbar-profile {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Push to the right */
+        }
+
+        .navbar-profile img {
+            width: 40px; /* Adjust size as needed */
+            height: 40px; /* Adjust size as needed */
+            border-radius: 50%; /* Make it round */
+            margin-right: 20px; /* Add space between image and username */
+            margin-left: 10px;
+            object-fit: cover;
+        }
+
+        .navbar-profile span {
+            color: #f2f2f2; /* Text color */
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -42,6 +64,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{path('home')}}">Home</a>
                 </li>
@@ -62,6 +85,7 @@
                         {% endif %}
                     </ul>
                 </li>
+                
                 {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -76,8 +100,20 @@
                 </li>
                 {% endif %}
             </ul>
+            <!-- User profile picture and username -->
         </div>
     </div>
+    {% if app.user%}
+                      <div class="navbar-profile">
+                        <span style="font-size: 20px;">{{ app.user.username }}</span> <!-- Display the user's username -->
+                        {% if app.user.profilepic %}
+                        <img src="{{ asset('pfpics/' ~ app.user.profilepic) }}" alt="Profile Picture"> 
+                        </div>
+                        {% else %}
+                        <img src="{{ asset('pfpics/NoPFP.jpg') }}" alt="Profile Picture"> 
+                        </div>
+                        {% endif %}
+            {% endif %}
 </nav>
 <div class="container">
     {% block body %}{% endblock %}
@@ -104,10 +140,5 @@
         <p class="text-light">&copy; 2024 SymStore. All rights reserved.</p>
     </div>
 </footer>
-
-
-
-
-
 </body>
 </html>

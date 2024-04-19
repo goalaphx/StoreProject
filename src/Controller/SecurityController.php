@@ -25,50 +25,44 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'app_login')]
-    public function login(Request $request, EntityManagerInterface $entityManager, AuthenticationUtils $authenticationUtils, SessionInterface $session): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $msg = "";
-        
-        // Retrieve error from authentication utils
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // Last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         $form = $this->createForm(LoginType::class);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $repository = $entityManager->getRepository(User::class);
-            $login = $repository->findOneBy([
-                'username' => $formData['username'],
-                'password' => $formData['password'],
-            ]);
-
-            if ($login !== null) {
-                if ($login->GetVerifiyStatus() == "Pending") {
-                    $WhatsappNo = $login->getphonenum();
+            $user = $repository->findOneBy(['username' => $formData['username']]);
+    
+            if ($user) {
+                // Check if the user's status is "Verified"
+                if ($user->GetVerifiyStatus() === "Verified") {
+                    // Perform authentication and redirect to the homepage
+                    // You need to implement the authentication logic here
+                    // Example: return $this->redirectToRoute('home');
+                } else {
+                    // If the user's status is "Pending", redirect to the verify route
+                    $WhatsappNo = $user->getPhonenum();
                     $otp = sprintf('%06d', mt_rand(0, 999999));
                     $this->twilioService->sendWhatsappOTP($WhatsappNo, $otp);
                     $session->set('username', $formData['username']);
                     $session->set('otp', $otp);
                     return $this->redirectToRoute('verify');
-                } else {
-                    $msg = "Your account has been verified, and you will be redirected to your dashboard page.";
-                    // return $this->redirectToRoute('dashboard');
                 }
             } else {
                 $msg = "Incorrect Username/Password";
             }
         }
-
+    
         return $this->render('security/login.html.twig', [
             'form' => $form->createView(),
-            'last_username' => $lastUsername,
-            'error' => $error,
-            'message' => $msg,
+            'message' => $msg ?? null,
         ]);
     }
+    
+    
+
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void

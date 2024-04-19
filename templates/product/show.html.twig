@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">{{ product.description }}</p>
-                        <h5><span class="text-danger">{{ product.price }} DH</span></h5>
+                        <h5><span class="text-danger">{{ product.price }} $</span></h5>
                         <h5><span class="text-success">Category: {{ product.category.name }}</span></h5>
                     </div>
                 </div>
@@ -51,28 +51,28 @@
                     intent: 'capture',  // capture or authorize
                     purchase_units: [{
                         amount: {
-                            value: 50.25
+                            value: {{ product.price }} // Set the product price dynamically
                         },
-                        description: 'Magical unicorn',
-                        invoice_id: '1234567890',
-                        soft_descriptor: 'unicorn-2345678'
+                        description: 'Product: {{ product.name }}', // Description of the product
+                        invoice_id: '1234567890', // Unique invoice ID
+                        soft_descriptor: 'Product-{{ product.id }}' // Soft descriptor
                     }],
                     application_context: {
-                        brand_name: 'My amazing brand',
-                        shipping_preference: 'NO_SHIPPING' // if you handle shipping
+                        brand_name: 'Your Brand Name',
+                        shipping_preference: 'NO_SHIPPING' // If you handle shipping
                     }
                 });
             },
             // Finalizes the transaction after payer approval
             onApprove: (data) => {
-                console.log('Unicorn bought, yay !')
+                console.log('Payment completed successfully!');
             },
             // The user closed the window
             onCancel: () => {
                 console.log('The user canceled the payment');
             },
             onError: (err) => {
-                console.log('Something went wrong', err);
+                console.log('An error occurred during payment:', err);
             }
         }).render('#paypal-button-container');
     </script>

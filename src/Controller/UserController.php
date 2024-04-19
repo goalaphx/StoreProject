@@ -43,15 +43,29 @@ class UserController extends AbstractController
         return $this->redirectToRoute('admin_user_list');
     }
     
-    #[Route('/user/{id}/delete', name: 'admin_user_delete')]
+    #[Route('/user/delete/{id}', name: 'admin_user_delete')]
     #[IsGranted("ROLE_ADMIN", statusCode:404, message:"Page not found")]
-    public function deleteUser(User $user): Response
+    public function deleteUser(User $user) : Response
     {
+        
+    
+        $orders = $user->getOrders();
+        foreach ($orders as $order) {
+            $this->entityManager->remove($order);
+        }
         $this->entityManager->remove($user);
         $this->entityManager->flush();
-        $this->addFlash('success', 'User deleted successfully.');
+        $this->addFlash(
+            'success',
+            'The User was Removed'
+        );
+    
+        // Redirect to the user list page upon successful deletion
         return $this->redirectToRoute('admin_user_list');
     }
+    
+    
+
 
     #[Route('/user/edit/{id}', name: 'edit_profile')]
     public function EditProfile(User $user, Request $request): Response

@@ -53,45 +53,55 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('verify');
         }
-
+        $this->addFlash(
+            'success',
+            'You Have Registered Succesfully, now Please Verify your Account'
+        );
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }
     #[Route('/verify', name: 'verify')]
-    public function verify(Request $request, SessionInterface $session): Response
-    {
-        $msg = "";
-        if ($session->get('otp') !== null && $session->get('username') !== null) {
-            $otpFromForm = $request->request->get('otp');
-            $sessionOtp = $session->get('otp');
-            if (empty($otpFromForm)) {
-                $msg = "";
-            } else {
-                if ($otpFromForm == $sessionOtp) {
-                    $sessionUsername = $session->get('username');
-                    $userRepository = $this->entityManager->getRepository(User::class);
-                    $user = $userRepository->findOneBy(['username' => $sessionUsername]);
-                    if ($user) {
-                        $user->setVerifyStatus('Verified');
-                        $this->entityManager->persist($user);
-                        $this->entityManager->flush();
-                        $msg = 'Account verified successfully.';
-                        //  return $this->redirectToRoute('dashboard');
-                    } else {
-                        return $this->redirectToRoute('login');
-                    }
-                } else {
-                    $msg = 'Verification code is incorrect.';
-                }
-            }
+public function verify(Request $request, SessionInterface $session): Response
+{
+    $msg = "";
+    if ($session->get('otp') !== null && $session->get('username') !== null) {
+        $otpFromForm = $request->request->get('otp');
+        $sessionOtp = $session->get('otp');
+        if (empty($otpFromForm)) {
+            $msg = "";
         } else {
-            return $this->redirectToRoute('login');
-        }    
-        return $this->render('registration/verify.html.twig', ['message' => $msg]);
-    }
+            if ($otpFromForm == $sessionOtp) {
+                $sessionUsername = $session->get('username');
+                $userRepository = $this->entityManager->getRepository(User::class);
+                $user = $userRepository->findOneBy(['username' => $sessionUsername]);
+                if ($user) {
+                    $user->setVerifyStatus('Verified');
+                    $this->entityManager->persist($user);
+                    $this->entityManager->flush();
+                    $msg = 'Account verified successfully.';
+                    $this->addFlash(
+                        'success',
+                        'Your Account is now Verified , Please Try to Login'
+                    );
+                    // Redirect to login page after verification
+                    return $this->redirectToRoute('app_login');
+                } else {
+                    return $this->redirectToRoute('app_login');
+                }
+            } else {
+                $msg = 'Verification code is incorrect.';
+            }
+        }
+    } else {
+        return $this->redirectToRoute('app_login');
+    }    
+    
+    return $this->render('registration/verify.html.twig', ['message' => $msg]);
+}
+
     
       
    
